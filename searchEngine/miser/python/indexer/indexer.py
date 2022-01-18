@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from itertools import accumulate
-from operator import inv
-from pydoc import doc
-
+import os
 
 class PostingsList:  # 倒排列表
 
@@ -36,9 +34,6 @@ class InvertedIndexHash:  # 倒排文件
     def __repr__(self):
         return self.token_text
 
-
-
-
 class InvertedIndexHashList:
     def __init__(self):
         self.indices = []
@@ -54,8 +49,6 @@ class InvertedIndexHashList:
         self.indices.append(invertedIndex)
         return
   
-
-
 class Indexer:
 
     def __init__(self,
@@ -195,10 +188,11 @@ class Indexer:
 
 
 if __name__ == "__main__":
-    test_doc_one = ("我 喜欢 自然 语言 处理 ， 还 喜欢 玩 帝国 时代 4 。", 1)
-    test_doc_two = ("他 平时 爱 看 自然 科学 ， 但是 不 喜欢 社会 科学 。", 2)
+    root = r"D:\BaiduNetdiskWorkspace\数据集"
+    data_path = os.path.join(root, "Fudan/train/C32-Agriculture/utf8")
 
-    test_indexer = Indexer()
-    
-    test_indexer.add_document(test_doc_one)
-    pass
+    # test_tokenizer = 
+
+    filenames = os.listdir(data_path)
+    for filename in filenames[:10]:
+        print(filename)
