@@ -15,6 +15,7 @@ class Nrepeat:
         with open(document_path, 'r', encoding="utf-8") as f:
             document_parsed = document_parser(f)
     def add_document_parsed(self, ):
+        pass 
 
 
 
