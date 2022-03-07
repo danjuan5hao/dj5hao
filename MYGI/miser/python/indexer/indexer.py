@@ -5,14 +5,18 @@ import re
 
 
 class PostingsNode:  # 倒排列表项
-
-    def __init__(self, document_id, sentence_ids, sentence_count, offsets, positions_count,
+    def __init__(self,
+                 document_id,
+                 sentence_ids,
+                 sentence_count,
+                 offsets,
+                 positions_count,
                  posting_node_next=None):
-        self.document_id = document_id   # 文档的id
+        self.document_id = document_id  # 文档的id
         self.sentence_ids = sentence_ids  # 出现token的句子id
         self.sentence_count = sentence_count  # 出现token的句子的数量
         self.offsets = offsets  # token在文档中出现的位置（全文， 句子）
-        self.positions_count = positions_count   # token一共在文档中出现了几次
+        self.positions_count = positions_count  # token一共在文档中出现了几次
         self.posting_node_next = posting_node_next  # 下指向一篇文档的倒排项
 
 
@@ -23,7 +27,7 @@ class InvertedIndex:  # 倒排索引
                  postings_node=None,
                  docs_count=None,
                  positions_count=None):  #
-        self.token_id = token_id    # token的id
+        self.token_id = token_id  # token的id
         self.token_text = token_text
         self.postings_node = postings_node  # 第一个倒排项
         self.docs_count = docs_count  # 出现token的文档数量
@@ -43,25 +47,24 @@ class InvertedIndexDict:
     def __iter__(self):
         for i in self.indices:
             yield i
-    
+
     def add_index(self, index):
-        pass 
+        pass
 
 
 class Indexer:
     """
     构建文档的倒排索引，然后合并到磁盘上【目前是数据库】
     """
-
-    def __init__(self,
-                 invertedIndexDict_buffer,
-                 invertedIndexDict_buffer_threshold,  
-                 # 这里按照文档的数量作为阈值，但是应该是存储空间不足了，然后进行缓存。
-                 ):
+    def __init__(
+        self,
+        invertedIndexDict_buffer,
+        invertedIndexDict_buffer_threshold,
+        # 这里按照文档的数量作为阈值，但是应该是存储空间不足了，然后进行缓存。
+    ):
         self.invertedIndexDict_buffer = invertedIndexDict_buffer
         self.invertedIndexDict_buffer_threshold = invertedIndexDict_buffer_threshold
         self.invertedIndexDict_buffer_count = 0
-        
 
     def add_document(self, document, document_db, index_db):
         """
@@ -72,8 +75,10 @@ class Indexer:
         """
         # document_id = self._save_doucment_db(document, document_db)
         document_id = 2
-        doc_invertedIndexDict = self._document_to_doc_invertedIndexDict(document, document_id)
-        self._merge_doc_buffer(doc_invertedIndexDict, self.invertedIndexDict_buffer)
+        doc_invertedIndexDict = self._document_to_doc_invertedIndexDict(
+            document, document_id)
+        self._merge_doc_buffer(doc_invertedIndexDict,
+                               self.invertedIndexDict_buffer)
 
         self.invertedIndex_buffer_doc_count += 1
 
@@ -82,29 +87,29 @@ class Indexer:
         return
 
     def _save_document_db(self, document, document_db):
-        pass 
-    
+        pass
+
     def _document_to_doc_invertedIndexDict(document, document_id):
         doc_invertedIndexDict = InvertedIndexDict()
         tokens = self._tokenize_document(document)
-        self._tokens_to_invertedIndexDict(tokens, doc_invertedIndexDict, document_id)
+        self._tokens_to_invertedIndexDict(tokens, doc_invertedIndexDict,
+                                          document_id)
         return doc_invertedIndexDict
 
     # def _split_document(self, document):
     #     pass
 
-    def _tokenize_document(self, document): 
+    def _tokenize_document(self, document):
         chars = [char for char in document]
         return chars
 
-    def _tokens_to_invertedIndexDict(self, tokens, document_id, invertdIndexDict):
+    def _tokens_to_invertedIndexDict(self, tokens, document_id,
+                                     invertdIndexDict):
         sentence_offset = 0
         document_offset = 0
         for token in tokens:
             token_sentence_offset = sentence_offset
             token_document_offset = document_offset
-
-
 
     def _tokens_to_invertedIndex(self, tokens, document_id):
         """为文档中的所有词元船舰倒排列表,组成文档级别的倒排索引
@@ -127,8 +132,8 @@ class Indexer:
 
         positionList = PostingsList(document_id, [token_position], 1, None)
 
-        self._add_postionList_to_invertedIndex(
-            positionList,  token_invertedIndex)
+        self._add_postionList_to_invertedIndex(positionList,
+                                               token_invertedIndex)
         return
 
     def _get_invertedIndex_by_token(self, token_text, doc_invertedIndex_list):
@@ -158,7 +163,8 @@ class Indexer:
             p_prev.positions_list_next = positionList
             return
 
-    def _merge_inverted_index(self, invertedIndexListOne, invertedIndexListTwo):
+    def _merge_inverted_index(self, invertedIndexListOne,
+                              invertedIndexListTwo):
         """
         1. 按照token对齐
         2. 倒排列表+（检查重复？？？， doc_id）
